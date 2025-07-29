@@ -1,0 +1,20 @@
+{
+    "name": "kunteinzo/cryptocom",
+    "description": "Just Crypto stuff",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Kunteinzo\\Cryptocom\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Khun Thein Htet Oo",
+            "email": "theinhtetoo473@gmail.com"
+        }
+    ],
+    "require": {
+        "paragonie/sodium_compat": "^2.1",
+        "firebase/php-jwt": "^6.11"
+    }
+}
