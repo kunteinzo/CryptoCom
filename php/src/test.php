@@ -1,14 +1,8 @@
 <?php
 
-require "../vendor/autoload.php";
+$key = "12345678901234567890123456789012"; # 32 bytes for 256 bits
+$iv = "123456789012"; # 12 bytes iv
 
-header("Content-Type: application/json");
-
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
-$jwt = new JWT();
-
-$d = $jwt->encode(['data' => 'test'], "key", "HS512");
-//echo $d;
-echo json_encode($jwt->decode($d, new Key("key", "HS512")));
+$encrypted = openssl_encrypt("Hello", "AES-256-GCM", $key, OPENSSL_RAW_DATA, $iv, $tag);
+$full_encrypted = $iv . $encrypted . $tag;
+echo base64_encode($full_encrypted);

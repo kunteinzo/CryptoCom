@@ -3,6 +3,11 @@
  */
 package org.example
 
+import javax.crypto.Cipher
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
+import java.util.Base64
+
 class App {
     val greeting: String
         get() {
@@ -11,5 +16,10 @@ class App {
 }
 
 fun main() {
-    println(App().greeting)
+    val key = "12345678901234567890123456789012".toByteArray()
+    val iv = "123456789012".toByteArray()
+    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+    cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), GCMParameterSpec(128, iv))
+    val enc = cipher.doFinal("Hello".toByteArray())
+    println(Base64.getEncoder().encodeToString(iv + enc))
 }

@@ -7,14 +7,22 @@ import os, base64
 
 key = os.urandom(32)
 iv = os.urandom(12)
+
+print("Key: {}\nIV: {}".format(
+    base64.b64encode(key).decode(), 
+    base64.b64encode(iv).decode()
+    ))
+
 cipher = Cipher(algorithms.AES(key), modes.GCM(iv), backend=default_backend())
 
 encryptor = cipher.encryptor()
 
 encrypted = encryptor.update(b'Hello world!') + encryptor.finalize() + encryptor.tag
 
+print("Encrypted: ",base64.b64encode(encrypted).decode())
+
 decryptor = cipher.decryptor()
 
 decrypted = decryptor.update(encrypted[:-16]) + decryptor.finalize_with_tag(encrypted[-16:])
 
-print(decrypted.decode())
+print("Decrypted: ", decrypted.decode())
