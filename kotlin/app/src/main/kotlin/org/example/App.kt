@@ -22,4 +22,12 @@ fun main() {
     cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), GCMParameterSpec(128, iv))
     val enc = cipher.doFinal("Hello".toByteArray())
     println(Base64.getEncoder().encodeToString(iv + enc))
+
+    val last = iv + enc
+    val div = last.copyOfRange(0, 12)
+    val droot = last.copyOfRange(12, last.size)
+    val c2 = Cipher.getInstance("AES/GCM/NoPadding")
+    c2.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), GCMParameterSpec(128, div))
+    val dec = c2.doFinal(droot)
+    println(dec.decodeToString())
 }
