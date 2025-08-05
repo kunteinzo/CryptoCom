@@ -6,7 +6,11 @@ package org.example
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import javax.crypto.spec.OAEPParameterSpec
+import javax.crypto.spec.PSource
 import java.util.Base64
+import java.security.KeyPairGenerator
+import java.security.spec.MGF1ParameterSpec
 
 class App {
     val greeting: String
@@ -17,6 +21,7 @@ class App {
 
 fun main() {
     testAES()
+    testRSA()
 }
 
 fun testAES() {
@@ -35,4 +40,22 @@ fun testAES() {
     c2.init(Cipher.DECRYPT_MODE, SecretKeySpec(key, "AES"), GCMParameterSpec(128, div))
     val dec = c2.doFinal(droot)
     println("Decrypted: ${dec.decodeToString()}")
+}
+
+fun testRSA() {
+    val text = "Hello"
+    val kpg = KeyPairGenerator.getInstance("RSA")
+    kpg.initialize(2048)
+    val kp = kpg.genKeyPair()
+    val privateKey = kp.private
+    val publicKey = kp.public
+
+    val cipher = Cipher.getInstance("RSA/ECB/OAEPwithSHA-512andMGF1Padding")
+    cipher.init(Cipher.ENCRYPT_MODE, publicKey, OAEPParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, PSource.PSpecified.DEFAULT))
+    val encrypted = cipher.doFinal(text.toByteArray())
+    println("Encrypted: ${Base64.getEncoder().encodeToString(encrypted)}")
+
+    val cipher2 = Cipher.getInstance("RSA/ECB/OAEPwithSHA-512andMGF1Padding")
+    cipher2.init(Cipher.DECRYPT_MODE, privateKey, OAEPParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, PSource.PSpecified.DEFAULT))
+    println("Decrypted: ${cipher2.doFinal(encrypted).decodeToString()}")
 }
