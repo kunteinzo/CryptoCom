@@ -11,7 +11,7 @@ en = ci.encryptor()
 
 enc = iv + en.update(b"Hello") + en.finalize() + en.tag
 
-print(base64.b64encode(enc).decode())
+print( 'Encrypted:',base64.b64encode(enc).decode())
 
 droot = enc
 div = droot[:12]
@@ -21,6 +21,6 @@ tag = droot[-16:]
 ci2 = Cipher(algorithms.AES(key), modes.GCM(iv, tag), default_backend())
 decryptor = ci2.decryptor()
 
-print((decryptor.update(dat)+decryptor.finalize()).decode())
+print('Decrypted:',(decryptor.update(dat)+decryptor.finalize()).decode())
 
 

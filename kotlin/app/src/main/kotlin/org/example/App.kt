@@ -16,13 +16,17 @@ class App {
 }
 
 fun main() {
+    testAES()
+}
+
+fun testAES() {
     val key = "12345678901234567890123456789012".toByteArray()
     val iv = "123456789012".toByteArray()
     val cipher = Cipher.getInstance("AES/GCM/NoPadding")
     cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), GCMParameterSpec(128, iv))
     val enc = cipher.doFinal("Hello".toByteArray())
     val encrypted = Base64.getEncoder().encodeToString(iv + enc)
-    println(encrypted)
+    println("Encrypted: $encrypted")
 
     val last = Base64.getDecoder().decode(encrypted)
     val div = last.copyOfRange(0, 12)
@@ -30,6 +34,5 @@ fun main() {
     val c2 = Cipher.getInstance("AES/GCM/NoPadding")
     c2.init(Cipher.DECRYPT_MODE, SecretKeySpec(key, "AES"), GCMParameterSpec(128, div))
     val dec = c2.doFinal(droot)
-    println(dec.decodeToString())
-    //println(dec.decodeToString())
+    println("Decrypted: ${dec.decodeToString()}")
 }
