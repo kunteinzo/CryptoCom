@@ -4,6 +4,7 @@
 package org.example
 
 import javax.crypto.Cipher
+import javax.crypto.Mac
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import javax.crypto.spec.OAEPParameterSpec
@@ -22,6 +23,11 @@ class App {
 fun main() {
     testAES()
     testRSA()
+
+    val mac = Mac.getInstance("HmacSHA512");
+    mac.init(SecretKeySpec("12345678901234567890123456789012".toByteArray(), "HmacSHA512"))
+    val res = mac.doFinal("Hello".toByteArray())
+    println(Base64.getEncoder().encodeToString(res))
 }
 
 fun testAES() {
