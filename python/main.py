@@ -3,7 +3,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes, hmac
 from cryptography.hazmat.backends import default_backend
 
-import os, base64
+import os, base64, jwt
 
 def test_aes():
     key = b"12345678901234567890123456789012" # 32 bytes for 256 bits
@@ -11,7 +11,7 @@ def test_aes():
     ci = Cipher(algorithms.AES(key), modes.GCM(iv), default_backend())
     en = ci.encryptor()
     enc = iv + en.update(b"Hello") + en.finalize() + en.tag
-    print( 'Encrypted:',base64.b64encode(enc).decode())
+    print('AES Encrypted:',base64.b64encode(enc).decode())
 
     droot = enc
     div = droot[:12]
@@ -21,7 +21,7 @@ def test_aes():
     ci2 = Cipher(algorithms.AES(key), modes.GCM(iv, tag), default_backend())
     decryptor = ci2.decryptor()
 
-    print('Decrypted:',(decryptor.update(dat)+decryptor.finalize()).decode())
+    print('AES Decrypted:',(decryptor.update(dat)+decryptor.finalize()).decode())
 
 
 def test_rsa():
@@ -38,7 +38,7 @@ def test_rsa():
         )
     )
 
-    print("Encrypted:", base64.b64encode(encrypted).decode())
+    print("RSA Encrypted:", base64.b64encode(encrypted).decode())
 
     decrypted = private_key.decrypt(
         encrypted,
@@ -49,16 +49,24 @@ def test_rsa():
         )
     )
 
-    print("Decrypted:", decrypted.decode())
+    print("RSA Decrypted:", decrypted.decode())
 
 
 def test_hmac():
     h = hmac.HMAC(b'12345678901234567890123456789012', hashes.SHA512())
     h.update(b'Hello')
-    print(base64.b64encode(h.finalize()).decode())
+    print('HMAC:',base64.b64encode(h.finalize()).decode())
+
+
+def test_jwt():
+    jtk = jwt.PyJWT()
+    tk = jtk.encode({'test':'test'}, 'secret', 'HS512')
+    print('JWT Encrypt:',tk)
+    print('JWT Decrypt:',jtk.decode(tk, 'secret', ['HS512']))
 
 
 if __name__ == '__main__':
     test_aes()
     test_rsa()
     test_hmac()
+    test_jwt()

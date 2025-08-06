@@ -1,5 +1,9 @@
 <?php
 
+require 'vendor/autoload.php';
+
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 function test_aes(){
     $key = "12345678901234567890123456789012"; # 32 bytes for 256 bits
@@ -35,10 +39,19 @@ function test_rsa(){
 function test_hmac(){
     echo base64_encode(
         hash_hmac('sha512', 'Hello', "secret", true)
-    );
+    ). PHP_EOL;
+}
+
+
+function test_jwt() {
+    $jwt = new JWT();
+    $jtk = $jwt->encode(['test'=>'test'], 'secret', 'HS512');
+    echo "JWT Encrypt: $jtk" . PHP_EOL;
+    echo 'JWT Decrypt: '.json_encode($jwt->decode($jtk, new Key('secret', 'HS512'))). PHP_EOL;
 }
 
 
 test_aes();
 test_rsa();
 test_hmac();
+test_jwt();
