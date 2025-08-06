@@ -23,8 +23,15 @@ function test_rsa(){
     openssl_pkey_export($raw_key, $privateKey);
     $publicKey = openssl_pkey_get_details($raw_key)['key'];
 
-    //openssl_public_encrypt($text,)
+    openssl_public_encrypt($text,$encrypted, $publicKey, OPENSSL_PKCS1_OAEP_PADDING);
+
+    echo 'Encrypted: '.base64_encode($encrypted). PHP_EOL;
+
+    openssl_private_decrypt($encrypted, $decrypted, $privateKey, OPENSSL_PKCS1_OAEP_PADDING);
+
+    echo 'Decrypted: '. $decrypted;
 }
 
 
 test_aes();
+test_rsa();
