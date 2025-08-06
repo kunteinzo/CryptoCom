@@ -1,6 +1,6 @@
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives import serialization, hashes, hmac
 from cryptography.hazmat.backends import default_backend
 
 import os, base64
@@ -52,7 +52,13 @@ def test_rsa():
     print("Decrypted:", decrypted.decode())
 
 
+def test_hmac():
+    h = hmac.HMAC(b'12345678901234567890123456789012', hashes.SHA512())
+    h.update(b'Hello')
+    print(base64.b64encode(h.finalize()).decode())
+
 
 if __name__ == '__main__':
     test_aes()
     test_rsa()
+    test_hmac()
