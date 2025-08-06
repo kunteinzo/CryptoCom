@@ -23,11 +23,7 @@ class App {
 fun main() {
     testAES()
     testRSA()
-
-    val mac = Mac.getInstance("HmacSHA512");
-    mac.init(SecretKeySpec("12345678901234567890123456789012".toByteArray(), "HmacSHA512"))
-    val res = mac.doFinal("Hello".toByteArray())
-    println(Base64.getEncoder().encodeToString(res))
+    testHMAC()
 }
 
 fun testAES() {
@@ -64,4 +60,11 @@ fun testRSA() {
     val cipher2 = Cipher.getInstance("RSA/ECB/OAEPwithSHA-512andMGF1Padding")
     cipher2.init(Cipher.DECRYPT_MODE, privateKey, OAEPParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, PSource.PSpecified.DEFAULT))
     println("Decrypted: ${cipher2.doFinal(encrypted).decodeToString()}")
+}
+
+fun testHMAC() {
+    val mac = Mac.getInstance("HmacSHA512");
+    mac.init(SecretKeySpec("12345678901234567890123456789012".toByteArray(), "HmacSHA512"))
+    val res = mac.doFinal("Hello".toByteArray())
+    println(Base64.getEncoder().encodeToString(res))
 }
