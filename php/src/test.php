@@ -32,6 +32,13 @@ function test_rsa(){
     echo 'Decrypted: '. $decrypted;
 }
 
+function test_hmac(){
+    echo base64_encode(
+        hash_hmac('sha512', 'Hello', "secret", true)
+    );
+}
+
 
 test_aes();
 test_rsa();
+test_hmac();
